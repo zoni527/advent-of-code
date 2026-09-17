@@ -31,25 +31,26 @@ typedef struct {
 } String;
 
 typedef struct {
-	size_t	len;
-	char	*buf;
+	size_t		len;
+	const char	*buf;
 } StringView;
 
 
 ssize_t	print(const String *str);
 ssize_t	printLine(const String *str);
 
-String	*emptyStringPtr(void);
+String	*sEmpty(void);
 String	*sCopy(const String *str);
 String	*sCopyTo(const String *src, String *dest);
 String	*sCopyCStringTo(const char *src, String *dest);
 String	*sJoin(const String *s1, const String *s2);
-String	*sConcatTo(String *s1, const String *s2);
+String	*sAppend(String *s1, const String *s2);
 String	*sReserve(String *str, size_t size);
 void	sFreeBuf(String *str_ptr);
 void	sFreePtr(String **ptr);
 
-StringView	sView(const String *str, i32 start, i32 end);
+StringView	sView(const String *str);
+StringView	sSlice(const String *str, i32 start, i32 end);
 
 i32	sCompare(const String *s1, const String *s2);
 i32	sCompareN(const String *s1, const String *s2, size_t n);

@@ -42,7 +42,7 @@ static char *sBuffer(size_t size)
 }
 
 
-String *emptyStringPtr(void)
+String *sEmpty(void)
 {
 	String	*empty_string = calloc(1, sizeof(*empty_string));
 
@@ -57,7 +57,7 @@ String *emptyStringPtr(void)
 
 String *sCopy(const String *str)
 {
-	String	*copy = emptyStringPtr();
+	String	*copy = sEmpty();
 
 	copy->len = str->len;
 	copy->cap = str->cap;
@@ -74,7 +74,7 @@ String *sCopy(const String *str)
 
 String *sJoin(const String *s1, const String *s2)
 {
-	String	*joined = emptyStringPtr();
+	String	*joined = sEmpty();
 
 	joined->len = s1->len + s2->len;
 	joined->cap = joined->len;
@@ -87,7 +87,7 @@ String *sJoin(const String *s1, const String *s2)
 }
 
 
-String *sConcatTo(String *s1, const String *s2)
+String *sAppend(String *s1, const String *s2)
 {
 	if (s1->cap - s1->len < s2->len) {
 		char	*str_buf = sBuffer(s1->len + s2->len);
@@ -203,6 +203,23 @@ void sFreePtr(String **ptr)
 }
 
 
+StringView sView(const String *str)
+{
+	return (StringView){.len = str->len, .buf = str->buf};
+}
+
+
+StringView sSlice(const String *str, i32 start, i32 end)
+{
+	size_t	start_idx;
+
+	if (start < 0 && end < 0)
+		return (StringView){0};
+
+	return (StringView){.buf = str->buf + start, .len = end - start};
+}
+
+
 i32 sCompare(const String *s1, const String *s2)
 {
 	size_t	min_len = (s1->len < s2->len) ? s1->len : s2->len;
@@ -254,7 +271,7 @@ String *i64ToString(i64 num)
 		sign = -1;
 	}
 
-	String	*num_string = emptyStringPtr();
+	String	*num_string = sEmpty();
 
 	sReserve(num_string, num_len);
 	for (size_t i = 0; i < num_len && num != 0; ++i) {

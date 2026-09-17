@@ -156,7 +156,7 @@ int main(void)
 	size_t	append_number = 1;
 
 	sReserve(&candidate, 32);
-	sConcatTo(&candidate, &input);
+	sAppend(&candidate, &input);
 	sReserve(&num_string, 32);
 	sReserve(&md5BitString, 128);
 
@@ -167,7 +167,7 @@ int main(void)
 			exit(1);
 		}
 		i64IntoString(append_number, &num_string);
-		sConcatTo(&candidate, &num_string);
+		sAppend(&candidate, &num_string);
 		calculateHash(&candidate, &md5BitString, result);
 
 		out_bytes = (u8*)result;
