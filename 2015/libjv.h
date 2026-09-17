@@ -30,16 +30,29 @@ typedef struct {
 	char	*buf;	// pointer size is 32 or 64 bits
 } String;
 
+typedef struct {
+	size_t	len;
+	char	*buf;
+} StringView;
+
 
 ssize_t	print(const String *str);
 ssize_t	printLine(const String *str);
 
-String	*emptyString(void);
-String	*stringCopy(const String *str);
-String	*stringJoin(const String *s1, const String *s2);
-String	*stringConcatTo(String *s1, const String *s2);
-String	*stringReserve(String *str, size_t size);
-void	stringFree(String **str_ptr);
+String	*emptyStringPtr(void);
+String	*sCopy(const String *str);
+String	*sCopyTo(const String *src, String *dest);
+String	*sCopyCStringTo(const char *src, String *dest);
+String	*sJoin(const String *s1, const String *s2);
+String	*sConcatTo(String *s1, const String *s2);
+String	*sReserve(String *str, size_t size);
+void	sFreeBuf(String *str_ptr);
+void	sFreePtr(String **ptr);
+
+StringView	sView(const String *str, i32 start, i32 end);
+
+i32	sCompare(const String *s1, const String *s2);
+i32	sCompareN(const String *s1, const String *s2, size_t n);
 
 String	*i64ToString(i64 num);
 String	*i64IntoString(i64 num, String *str);
@@ -49,6 +62,6 @@ size_t	i64DecimalDigits(i64 num);
 
 
 # define strLen(str) (str).len
-# define stackString(str) (String){.buf = (str), .len = strlen(str), .cap = 0}
+# define stackString(str) (String){.buf = (str), .len = strlen((str)), .cap = 0}
 
 #endif

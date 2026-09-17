@@ -11,7 +11,7 @@ String	*md5BitStringFromString(String const *src, String *dest)
 	const size_t	padded_len = ((total_bytes + 63) / 64) * 64;
 
 	if (dest->cap < padded_len)
-		stringReserve(dest, padded_len * 2);
+		sReserve(dest, padded_len * 2);
 
 	memcpy(dest->buf, src->buf, src->len);
 	dest->buf[src->len] = 0x80;
@@ -147,18 +147,18 @@ int main(void)
 	// Known solution abcdef609043
 	String	input = stackString("iwrupvqb");
 
-	String	*candidate = emptyString();
-	String	*num_string = emptyString();
-	String	*md5BitString = emptyString();
+	String	candidate = {0};
+	String	num_string = {0};
+	String	md5BitString = {0};
 	u32		result[4] = {0};
 	u8		*out_bytes = NULL;
 	char	hash[33] = {0};
 	size_t	append_number = 1;
 
-	stringReserve(candidate, 32);
-	stringConcatTo(candidate, &input);
-	stringReserve(num_string, 32);
-	stringReserve(md5BitString, 128);
+	sReserve(&candidate, 32);
+	sConcatTo(&candidate, &input);
+	sReserve(&num_string, 32);
+	sReserve(&md5BitString, 128);
 
 	size_t	loop_limit = 100000000;
 	while (1) {
@@ -166,20 +166,20 @@ int main(void)
 			fprintf(stderr, "ERROR: limit reached\n");
 			exit(1);
 		}
-		i64IntoString(append_number, num_string);
-		stringConcatTo(candidate, num_string);
-		calculateHash(candidate, md5BitString, result);
+		i64IntoString(append_number, &num_string);
+		sConcatTo(&candidate, &num_string);
+		calculateHash(&candidate, &md5BitString, result);
 
 		out_bytes = (u8*)result;
 		if (out_bytes[0] == 0 && out_bytes[1] == 0 && (out_bytes[2] & 0xFF) == 0)
 			break;
 
-		candidate->len = input.len;
+		candidate.len = input.len;
 		++append_number;
 	}
-	stringFree(&candidate);
-	stringFree(&num_string);
-	stringFree(&md5BitString);
+	sFreeBuf(&candidate);
+	sFreeBuf(&num_string);
+	sFreeBuf(&md5BitString);
 
 	printf("%zu\n", append_number);
 

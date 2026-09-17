@@ -19,7 +19,7 @@ int main(void)
 		return 1;
 	}
 
-	while(fgets(buf, BUFLEN, file)) {
+	while (fgets(buf, BUFLEN, file)) {
 		l = atoi(buf);
 		str = strchr(buf, 'x') + 1;
 		w = atoi(str);
